@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace DebuggingMaximus
+﻿namespace DebuggingMaximus
 {
     /// <summary>
     /// General debugger, easy to use for less complex debugging.
@@ -32,6 +29,16 @@ namespace DebuggingMaximus
         {
             if (!debugStarted) SetDir(string.Empty);
             fileWriter.Log(message);
+        }
+
+        /// <summary>
+        /// Writes the error message to file. OBS, the debug folder directory can be set with Debugging.SetDir().
+        /// </summary>
+        /// <param name="message"></param>
+        public static void LogError(string message)
+        {
+            if (!debugStarted) SetDir(string.Empty);
+            fileWriter.Log("ERROR : "+message);
         }
     }
 
@@ -66,6 +73,16 @@ namespace DebuggingMaximus
             if (!hasDirectory) fileManager.SetDir(string.Empty, string.Empty);
             fileWriter.Log(message);
         }
+
+        /// <summary>
+        /// Writes the error message to file. OBS, the debug folder directory can be set with Debugging.SetDir().
+        /// </summary>
+        /// <param name="message"></param>
+        public void LogError(string message)
+        {
+            if (!hasDirectory) SetDir(string.Empty,string.Empty);
+            fileWriter.Log("ERROR : " + message);
+        }
     }
 
     /// <summary>
@@ -94,7 +111,8 @@ namespace DebuggingMaximus
         public void Log(string message)
         {
             sw = new StreamWriter(fileDir, true);
-            msg = DateTime.Now.ToString().Replace(" ", "").Replace(":", "").Replace("-", "");
+            msg = DateTime.Now.TimeOfDay.ToString();
+            msg = msg.Remove(msg.LastIndexOf("."));
             msg += " :" + index + ": ";
             index++;
             msg += message;
@@ -108,7 +126,7 @@ namespace DebuggingMaximus
     /// The FileManager handles your debug log file's directory position and directory folder name.
     /// </summary>
     public class FileManager
-    {
+    {       
         string dir = string.Empty;
         string dirName = string.Empty;
         string fileName = string.Empty;
