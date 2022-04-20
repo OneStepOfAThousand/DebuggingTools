@@ -8,8 +8,8 @@ namespace DebuggingMaximus
     /// </summary>
     public static class Debugging
     {
-        static FileManager fileManager = new FileManager();
-        static FileWriter fileWriter = new FileWriter();
+        static readonly FileManager fileManager = new();
+        static readonly FileWriter fileWriter = new();
         static bool debugStarted = false;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace DebuggingMaximus
         {
             fileManager.SetDir(directory, string.Empty);
             fileWriter.SetFileDir(fileManager.FileDir);
-            fileWriter.Log("Debug Started");
+            if(!debugStarted)fileWriter.Log("Debug Started");
             debugStarted = true;
         }
 
@@ -40,20 +40,20 @@ namespace DebuggingMaximus
     /// </summary>
     public class Debugger
     {
-        FileWriter fileWriter = new FileWriter();
-        FileManager fileManager = new FileManager();
+        readonly FileWriter fileWriter = new();
+        readonly FileManager fileManager = new();
         bool hasDirectory = false;
 
         /// <summary>
-        /// Sets the debuggers working directory and debug maps name. OBS, if this is not set the debugger will use the default paramaters, aka same as the static class Debugging.
+        /// Sets the debuggers working directory and debug folders name. OBS, if this is not set the debugger will use the default paramaters, aka same as the static class Debugging.
         /// </summary>
         /// <param name="directory"></param>
-        /// <param name="mapName"></param>
-        public void SetDir(string directory, string mapName)
+        /// <param name="folderName"></param>
+        public void SetDir(string directory, string folderName)
         {
-            fileManager.SetDir(directory, mapName);
+            fileManager.SetDir(directory, folderName);
             fileWriter.SetFileDir(fileManager.FileDir);
-            fileWriter.Log("Debug Started");
+            if (!hasDirectory) fileWriter.Log("Debug Started");
             hasDirectory = true;
         }
 
@@ -105,7 +105,7 @@ namespace DebuggingMaximus
     }
 
     /// <summary>
-    /// The FileManager handles your debug log file's directory position and directory maps name.
+    /// The FileManager handles your debug log file's directory position and directory folder name.
     /// </summary>
     public class FileManager
     {
@@ -114,7 +114,7 @@ namespace DebuggingMaximus
         string fileName = string.Empty;
         string fileDir = string.Empty;
         /// <summary>
-        /// The active debug file's directory. OBS, recommended to set FileManager.SetDir() before using this variable or you will get the default directory and debug map.
+        /// The active debug file's directory. OBS, recommended to set FileManager.SetDir() before using this variable or you will get the default directory and debug folder.
         /// </summary>
         public string FileDir
         {
@@ -126,17 +126,17 @@ namespace DebuggingMaximus
         }
 
         /// <summary>
-        /// Sets the filemanagers working directory as well as the debug maps name. 
-        /// Use the input, string.Empty, if you wish to use the default directory and/or mapName.
+        /// Sets the filemanagers working directory as well as the debug folders name. 
+        /// Use the input, string.Empty, if you wish to use the default directory and/or folderName.
         /// </summary>
         /// <param name="directory"></param>
-        /// <param name="mapName"></param>
+        /// <param name="folderName"></param>
         /// <returns></returns>
-        public bool SetDir(string directory, string mapName) //Return true if succesfull, creates debug folder in directory
+        public bool SetDir(string directory, string folderName) //Return true if succesfull, creates debug folder in directory
         {
             if (directory == string.Empty) directory = Directory.GetCurrentDirectory();
-            if (mapName == string.Empty) dirName = "Debugg";
-            else dirName = mapName;
+            if (folderName == string.Empty) dirName = "Debugg";
+            else dirName = folderName;
             directory = Path.Combine(directory, dirName);
             Directory.CreateDirectory(directory);
             if (!Directory.Exists(directory)) return false;
