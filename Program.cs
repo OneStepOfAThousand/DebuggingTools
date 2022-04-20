@@ -4,10 +4,9 @@ Debugger debugger = new();
 debugger.SetDir(string.Empty, "TestDebugg");
 Test();
 
-void Test() 
+void Test()
 {
-    debugger.SetDir(string.Empty, "TestDebugg");
     Debugging.Log("Test 1");
     debugger.Log("Test a");
-    if (Console.ReadKey().Key == ConsoleKey.Q)Test();
+    if (Console.ReadKey().Key == ConsoleKey.Q) Test();
 }

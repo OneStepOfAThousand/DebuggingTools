@@ -1,5 +1,10 @@
 ﻿namespace DebuggingMaximus
 {
+    //Made by Edwin Karlsson
+    //Contacts: Mail: edwinkar1014@gmail.com
+    //           Discord: EdwinKar#1184
+    //By using this debugger you agree that it's a usable debugger!
+
     /// <summary>
     /// General debugger, easy to use for less complex debugging.
     /// </summary>
