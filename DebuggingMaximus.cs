@@ -5,13 +5,18 @@
     //           Discord: EdwinKar#1184
     //By using this debugger you agree that it's a usable debugger!
 
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Collections.Generic;
+
     /// <summary>
     /// General debugger, easy to use for less complex debugging.
     /// </summary>
     public static class Debugging
     {
-        static readonly FileManager fileManager = new();
-        static readonly FileWriter fileWriter = new();
+        static readonly FileManager fileManager = new FileManager();
+        static readonly FileWriter fileWriter = new FileWriter();
         static bool debugStarted = false;
 
         /// <summary>
@@ -61,8 +66,8 @@
     /// </summary>
     public class Debugger
     {
-        readonly FileWriter fileWriter = new();
-        readonly FileManager fileManager = new();
+        readonly FileWriter fileWriter = new FileWriter();
+        readonly FileManager fileManager = new FileManager();
         bool hasDirectory = false;
 
         /// <summary>
