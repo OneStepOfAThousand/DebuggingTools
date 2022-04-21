@@ -22,7 +22,7 @@
         {
             fileManager.SetDir(directory, string.Empty);
             fileWriter.SetFileDir(fileManager.FileDir);
-            if(!debugStarted)fileWriter.Log("Debug Started");
+            if (!debugStarted) fileWriter.Log("Debug Started");
             debugStarted = true;
         }
 
@@ -52,7 +52,7 @@
         public static void LogError(string message)
         {
             if (!debugStarted) SetDir(string.Empty);
-            fileWriter.Log("ERROR : "+message);
+            fileWriter.Log("ERROR : " + message);
         }
     }
 
@@ -103,7 +103,7 @@
         /// <param name="message"></param>
         public void LogError(string message)
         {
-            if (!hasDirectory) SetDir(string.Empty,string.Empty);
+            if (!hasDirectory) SetDir(string.Empty, string.Empty);
             fileWriter.Log("ERROR : " + message);
         }
     }
@@ -150,7 +150,7 @@
     /// </summary>
     public class FileManager
     {
-        List <FileInfo> files = new List<FileInfo>();
+        List<FileInfo> files = new List<FileInfo>();
         DirectoryInfo? directoryInfo;
         string dir = string.Empty;
         string dirName = string.Empty;
@@ -212,16 +212,18 @@
             File.Create(fileDir).Close();
         }
 
-        void DeleteOldestLogs()
+        public void DeleteOldestLogs()
         {
+            Console.WriteLine("Reached delete files");
             FileInfo[] fileInDir = directoryInfo.GetFiles("*.txt").OrderByDescending(x => x.LastWriteTime).ToArray();
             foreach (FileInfo fileInfo in fileInDir)
             {
-                if (fileInfo.Name.Contains("DebugLog_"))files.Add(fileInfo);
+                Console.WriteLine("Added file to sorting");
+                if (fileInfo.Name.Contains("DebugLog_")) files.Add(fileInfo);
             }
-            if (files.Count>maxLogs)
+            if (files.Count > maxLogs)
             {
-                int length = files.Count-maxLogs;
+                int length = files.Count - maxLogs;
                 for (int i = 0; i < length; i++)
                 {
                     files.RemoveAt(0);
