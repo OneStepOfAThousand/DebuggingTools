@@ -176,6 +176,7 @@
         public void SetMaxLogsLimit(int limit)
         {
             maxLogs = limit;
+            DeleteOldestLogs(0);
         }
 
         /// <summary>
@@ -200,7 +201,7 @@
 
         void GenerateFile()
         {
-            DeleteOldestLogs();
+            DeleteOldestLogs(1);
             if (fileName == string.Empty)
             {
                 fileName = "DebugLog_";
@@ -212,21 +213,26 @@
             File.Create(fileDir).Close();
         }
 
-        public void DeleteOldestLogs()
+        public void DeleteOldestLogs(int offset)
         {
-            Console.WriteLine("Reached delete files");
+            files.Clear();
             FileInfo[] fileInDir = directoryInfo.GetFiles("*.txt").OrderByDescending(x => x.LastWriteTime).ToArray();
             foreach (FileInfo fileInfo in fileInDir)
             {
-                Console.WriteLine("Added file to sorting");
-                if (fileInfo.Name.Contains("DebugLog_")) files.Add(fileInfo);
+                if (fileInfo.Name.Contains("DebugLog_"))
+                {
+                    files.Add(fileInfo);
+                }
             }
+
             if (files.Count > maxLogs)
             {
-                int length = files.Count - maxLogs;
+                int length = files.Count - maxLogs+offset;
                 for (int i = 0; i < length; i++)
                 {
-                    files.RemoveAt(0);
+                    FileInfo file = files[files.Count - 1];
+                    files.Remove(file);
+                    File.Delete(file.FullName);
                 }
             }
         }
