@@ -25,6 +25,15 @@ namespace DebuggingMaximus
         }
 
         /// <summary>
+        /// Sets the limit for the max amount of logs allowed before they start to get deleted.
+        /// </summary>
+        /// <param name="input"></param>
+        public static void SetMaxLogsLimit(int input)
+        {
+            fileManager.SetMaxLogsLimit(input);
+        }
+
+        /// <summary>
         /// Writes the debug message to file. OBS, the debug folder directory can be set with Debugging.SetDir().
         /// </summary>
         /// <param name="message"></param>
@@ -55,6 +64,15 @@ namespace DebuggingMaximus
             fileWriter.SetFileDir(fileManager.FileDir);
             if (!hasDirectory) fileWriter.Log("Debug Started");
             hasDirectory = true;
+        }
+
+        /// <summary>
+        /// Sets the limit for the max amount of logs allowed before they start to get deleted.
+        /// </summary>
+        /// <param name="input"></param>
+        public void SetMaxLogsLimit(int input)
+        {
+            fileManager.SetMaxLogsLimit(input);
         }
 
         /// <summary>
@@ -109,10 +127,13 @@ namespace DebuggingMaximus
     /// </summary>
     public class FileManager
     {
+        List <FileInfo> files = new List<FileInfo>();
+        DirectoryInfo? directoryInfo;
         string dir = string.Empty;
         string dirName = string.Empty;
         string fileName = string.Empty;
         string fileDir = string.Empty;
+        int maxLogs = 30;
         /// <summary>
         /// The active debug file's directory. OBS, recommended to set FileManager.SetDir() before using this variable or you will get the default directory and debug folder.
         /// </summary>
@@ -123,6 +144,15 @@ namespace DebuggingMaximus
                 if (fileDir == string.Empty) GenerateFile();
                 return fileDir;
             }
+        }
+
+        /// <summary>
+        /// Sets the max limit for logs allowed to exist before they start getting deleted.
+        /// </summary>
+        /// <param name="limit"></param>
+        public void SetMaxLogsLimit(int limit)
+        {
+            maxLogs = limit;
         }
 
         /// <summary>
@@ -141,11 +171,13 @@ namespace DebuggingMaximus
             Directory.CreateDirectory(directory);
             if (!Directory.Exists(directory)) return false;
             dir = directory;
+            directoryInfo = new DirectoryInfo(dir);
             return true;
         }
 
         void GenerateFile()
         {
+            DeleteOldestLogs();
             if (fileName == string.Empty)
             {
                 fileName = "DebugLog_";
@@ -155,6 +187,23 @@ namespace DebuggingMaximus
             if (dir == string.Empty) SetDir(string.Empty, string.Empty);
             fileDir = Path.Combine(dir, fileName);
             File.Create(fileDir).Close();
+        }
+
+        void DeleteOldestLogs()
+        {
+            FileInfo[] fileInDir = directoryInfo.GetFiles("*.txt").OrderByDescending(x => x.LastWriteTime).ToArray();
+            foreach (FileInfo fileInfo in fileInDir)
+            {
+                if (fileInfo.Name.Contains("DebugLog_"))files.Add(fileInfo);
+            }
+            if (files.Count>maxLogs)
+            {
+                int length = files.Count-maxLogs;
+                for (int i = 0; i < length; i++)
+                {
+                    files.RemoveAt(0);
+                }
+            }
         }
     }
 }

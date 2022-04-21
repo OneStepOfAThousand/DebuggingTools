@@ -2,6 +2,7 @@
 using DebuggingMaximus;
 Debugger debugger = new();
 debugger.SetDir(string.Empty, "TestDebugg");
+Debugging.SetMaxLogsLimit(5);
 Test();
 
 void Test()
