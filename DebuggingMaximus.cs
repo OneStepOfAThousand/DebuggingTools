@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
-
-namespace DebuggingMaximus
+﻿namespace DebuggingMaximus
 {
+    //Made by Edwin Karlsson
+    //Contacts: Mail: edwinkar1014@gmail.com
+    //           Discord: EdwinKar#1184
+    //By using this debugger you agree that it's a usable debugger!
+
     /// <summary>
     /// General debugger, easy to use for less complex debugging.
     /// </summary>
@@ -41,6 +43,16 @@ namespace DebuggingMaximus
         {
             if (!debugStarted) SetDir(string.Empty);
             fileWriter.Log(message);
+        }
+
+        /// <summary>
+        /// Writes the error message to file. OBS, the debug folder directory can be set with Debugging.SetDir().
+        /// </summary>
+        /// <param name="message"></param>
+        public static void LogError(string message)
+        {
+            if (!debugStarted) SetDir(string.Empty);
+            fileWriter.Log("ERROR : "+message);
         }
     }
 
@@ -84,6 +96,16 @@ namespace DebuggingMaximus
             if (!hasDirectory) fileManager.SetDir(string.Empty, string.Empty);
             fileWriter.Log(message);
         }
+
+        /// <summary>
+        /// Writes the error message to file. OBS, the debug folder directory can be set with Debugging.SetDir().
+        /// </summary>
+        /// <param name="message"></param>
+        public void LogError(string message)
+        {
+            if (!hasDirectory) SetDir(string.Empty,string.Empty);
+            fileWriter.Log("ERROR : " + message);
+        }
     }
 
     /// <summary>
@@ -112,7 +134,8 @@ namespace DebuggingMaximus
         public void Log(string message)
         {
             sw = new StreamWriter(fileDir, true);
-            msg = DateTime.Now.ToString().Replace(" ", "").Replace(":", "").Replace("-", "");
+            msg = DateTime.Now.TimeOfDay.ToString();
+            msg = msg.Remove(msg.LastIndexOf("."));
             msg += " :" + index + ": ";
             index++;
             msg += message;
